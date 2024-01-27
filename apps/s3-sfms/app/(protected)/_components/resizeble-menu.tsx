@@ -12,8 +12,8 @@ function ResizableMenu({ children }: { children: React.ReactNode }) {
 		<ResizablePanel
 			defaultSize={100}
 			collapsible={true}
-			minSize={10}
-			maxSize={15}
+			minSize={12}
+			maxSize={18}
 			onCollapse={() => {
 				setIsCollapsed(true);
 			}}
