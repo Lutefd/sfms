@@ -118,11 +118,11 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 				sessionCookie.attributes
 			);
 			const { user } = await validateRequest();
-			const stringfiedexistingUser = JSON.stringify(existingUser);
-			const data = new TextEncoder().encode(stringfiedexistingUser);
-			const encodedexistingUser = encodeBase64(data);
+			const stringfiedUser = JSON.stringify(user);
+			const data = new TextEncoder().encode(stringfiedUser);
+			const encodedUser = encodeBase64(data);
 
-			cookies().set('userSession', encodedexistingUser, {
+			cookies().set('userSession', encodedUser, {
 				secure: process.env.NODE_ENV !== 'development',
 				sameSite: 'strict',
 			});
