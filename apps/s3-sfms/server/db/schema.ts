@@ -46,6 +46,7 @@ export const users = mysqlTable('user', {
 	two_factor_method: TwoFactorMethodEnum.$default(() => 'NONE'),
 	two_factor_secret: text('two_factor_secret'),
 	quota: int('quota').notNull().default(1000),
+	current_quota_use: int('current_quota_use').notNull().default(0),
 });
 
 export const oauthAccounts = mysqlTable('oauth_account', {
