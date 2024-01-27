@@ -17,6 +17,8 @@ export const lucia = new Lucia(adapter, {
 			status: databaseUserAttributes.status,
 			two_factor_method: databaseUserAttributes.two_factor_method,
 			name: databaseUserAttributes.name,
+			quota: databaseUserAttributes.quota,
+			current_quota_use: databaseUserAttributes.current_quota_use,
 		};
 	},
 	sessionCookie: {
