@@ -1,5 +1,5 @@
 'use server';
-import { validateRequest } from '@/server/auth';
+import { DatabaseUserAttributes, validateRequest } from '@/server/auth';
 import brcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 import { decodeBase64, encodeBase64 } from 'oslo/encoding';
@@ -23,5 +23,5 @@ export const readSession = async () => {
 	const decodedUserSession = decodeBase64(userSession?.value);
 	const decodedUser = new TextDecoder().decode(decodedUserSession);
 	const user = JSON.parse(decodedUser);
-	return user;
+	return user as DatabaseUserAttributes;
 };
