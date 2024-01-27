@@ -13,6 +13,7 @@ import { readSession } from '@/actions/session';
 import { LayoutContextProvider } from '@/components/context/layoutContext';
 import ResizableMenu from './_components/resizeble-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const mono = JetBrains_Mono({ subsets: ['latin'] });
 export default async function RootLayout({
@@ -31,11 +32,12 @@ export default async function RootLayout({
 					{/* <Menu /> */}
 					<Link
 						href="/gallery"
-						className={`text-2xl md:text-3xl font-bold ${mono.className} hover bg-slate-50/90`}
+						className={`text-2xl md:text-3xl font-bold ${mono.className}`}
 					>
 						SFMS
 					</Link>
 					<div className="ml-auto flex items-center space-x-4">
+						<ThemeToggle />
 						<UserNav
 							username={user.name!}
 							email={user.email}
@@ -50,7 +52,7 @@ export default async function RootLayout({
 			>
 				<LayoutContextProvider>
 					<ResizableMenu>
-						<Sidebar />
+						<Sidebar user={user} />
 					</ResizableMenu>
 				</LayoutContextProvider>
 				<ResizableHandle withHandle />
