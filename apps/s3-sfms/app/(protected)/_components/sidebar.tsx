@@ -25,11 +25,12 @@ interface SidebarProps {
 	user: DatabaseUserAttributes;
 }
 
-export function Sidebar({ className }: SidebarProps) {
+export function Sidebar({ className, user }: SidebarProps) {
 	const { isCollapsed } = useLayoutContext();
 
+	const percentageUtilized = (user.current_quota_use / user.quota) * 100;
 	return (
-		<div className={cn('pb-0 h-full', className)}>
+		<div className={cn('pb-0 h-full relative', className)}>
 			<div className="space-y-4 py-4">
 				<TooltipProvider delayDuration={0}>
 					<div className={isCollapsed ? ` py-2` : `px-3 py-2`}>
@@ -181,7 +182,7 @@ export function Sidebar({ className }: SidebarProps) {
 								Bibliotecas
 							</h2>
 
-							<ScrollArea className="h-[400px] px-1">
+							<ScrollArea className="min-h-[200px] md:max-h-[100px] 2xl:max-h-[400px] px-1">
 								<div className="space-y-1 p-2">
 									{/* {playlists?.map((playlist, i) => (
 								<Button
@@ -211,32 +212,45 @@ export function Sidebar({ className }: SidebarProps) {
 								</div>
 							</ScrollArea>
 							<Separator />
-							<div className="w-full justify-self-end self-end max-w-md p-6 bg-white rounded-lg  dark:bg-gray-800">
-								<h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
-									Storage Quota
-								</h2>
-								<p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-									Your current storage usage across all
-									services.
-								</p>
-								<div className="mt-4">
-									<div className="flex items-center justify-between">
-										<span className="text-sm text-gray-700 dark:text-gray-200">
-											25 GB used
-										</span>
-										<span className="text-sm text-gray-700 dark:text-gray-200">
-											100 GB total
-										</span>
-									</div>
-									<div className="mt-2 h-2 bg-gray-200 rounded-full dark:bg-gray-700">
-										<div
-											className="h-full bg-primary rounded-full"
-											style={{
-												width: '25%',
-											}}
-										/>
-									</div>
-								</div>
+							<div className="w-full absolute bottom-0  max-w-md px-6 py-2 bg-background rounded-lg  dark:bg-background">
+								<TooltipProvider delayDuration={0}>
+									<Tooltip>
+										<TooltipTrigger className="w-full">
+											<div className="mt-4">
+												<div className="mt-2 h-2 bg-gray-200 rounded-full dark:bg-gray-700">
+													<div
+														className="h-full bg-primary rounded-full"
+														style={{
+															width: `${percentageUtilized}`,
+														}}
+													/>
+												</div>
+												<div className="flex items-center w-full justify-between">
+													<span className="text-xs text-gray-700 dark:text-gray-200">
+														{(
+															user.current_quota_use /
+															1000
+														).toFixed(2)}{' '}
+														GB
+													</span>
+													<span className="text-xs text-gray-700 dark:text-gray-200">
+														{(
+															user.quota / 1000
+														).toFixed(2)}{' '}
+														GB
+													</span>
+												</div>
+											</div>
+										</TooltipTrigger>
+										<TooltipContent
+											side="top"
+											className="flex items-center gap-4"
+										>
+											Quanto de espaço você está
+											utilizando no momento
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
 							</div>
 						</>
 					)}
