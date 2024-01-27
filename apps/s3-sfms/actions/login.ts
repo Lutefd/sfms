@@ -17,8 +17,9 @@ import {
 } from '@/lib/two-factor-authentication';
 import { verifyTOTP } from './totp';
 import { Argon2id } from 'oslo/password';
-import { lucia } from '@/server/auth';
+import { lucia, validateRequest } from '@/server/auth';
 import { cookies } from 'next/headers';
+import { encodeBase64 } from 'oslo/encoding';
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
 	const validateFields = LoginSchema.safeParse(values);
@@ -30,19 +31,19 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 	}
 	const { email, password, code } = validateFields.data;
 
-	const user = await getUserByEmail(email);
+	const existingUser = await getUserByEmail(email);
 
-	if (!user || !user.email) {
+	if (!existingUser || !existingUser.email) {
 		return {
 			error: 'Usuário não encontrado',
 		};
 	}
-	if (!user.password) {
+	if (!existingUser.password) {
 		return {
 			error: 'Tenha certeza que você se cadastrou com o email e senha',
 		};
 	}
-	if (!user.emailVerified) {
+	if (!existingUser.emailVerified) {
 		const verificationToken = await generateVerificationToken(email);
 		await sendVerificationEmail(email, verificationToken);
 		return {
@@ -50,10 +51,10 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 		};
 	}
 
-	if (user.two_factor_method == 'EMAIL') {
+	if (existingUser.two_factor_method == 'EMAIL') {
 		if (code) {
 			const twoFactorToken = await getEmailTwoFactorTokenByEmail(
-				user.email
+				existingUser.email
 			);
 			if (!twoFactorToken) {
 				return {
@@ -73,25 +74,25 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 			}
 			await deleteEmailTwoFactorToken(twoFactorToken.id);
 			const existingConfirmation = await getEmailTwoFactorConfirmation(
-				user.id
+				existingUser.id
 			);
 			if (existingConfirmation) {
-				await deleteEmailTwoFactorConfirmation(user.id);
+				await deleteEmailTwoFactorConfirmation(existingUser.id);
 			}
 
-			await generateEmailTwoFactorConfirmation(user.id);
+			await generateEmailTwoFactorConfirmation(existingUser.id);
 		} else {
-			const token = await generateEmailTwoFactorToken(user.email);
-			await sendTwoFactorEmail(user.email, token);
+			const token = await generateEmailTwoFactorToken(existingUser.email);
+			await sendTwoFactorEmail(existingUser.email, token);
 			return {
 				twoFactor: true,
 			};
 		}
 	}
 
-	if (user.two_factor_method == 'AUTHENTICATOR') {
+	if (existingUser.two_factor_method == 'AUTHENTICATOR') {
 		if (code) {
-			const result = await verifyTOTP(code, user.id);
+			const result = await verifyTOTP(code, existingUser.id);
 			if (result.error) {
 				return {
 					error: result.error,
@@ -105,17 +106,26 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 	}
 	try {
 		const validPassword = await new Argon2id().verify(
-			user.password,
+			existingUser.password,
 			password
 		);
 		if (validPassword) {
-			const session = await lucia.createSession(user.id, {});
+			const session = await lucia.createSession(existingUser.id, {});
 			const sessionCookie = lucia.createSessionCookie(session.id);
 			cookies().set(
 				sessionCookie.name,
 				sessionCookie.value,
 				sessionCookie.attributes
 			);
+			const { user } = await validateRequest();
+			const stringfiedexistingUser = JSON.stringify(existingUser);
+			const data = new TextEncoder().encode(stringfiedexistingUser);
+			const encodedexistingUser = encodeBase64(data);
+
+			cookies().set('userSession', encodedexistingUser, {
+				secure: process.env.NODE_ENV !== 'development',
+				sameSite: 'strict',
+			});
 			return {
 				success: 'Login realizado com sucesso',
 				redirect: true,
