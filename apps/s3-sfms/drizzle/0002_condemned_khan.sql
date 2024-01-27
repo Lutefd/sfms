@@ -1,0 +1,1 @@
+ALTER TABLE `s3-sfms_files_to_libraries` ADD PRIMARY KEY(`libraryId`,`fileId`);

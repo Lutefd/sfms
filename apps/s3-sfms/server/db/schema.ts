@@ -45,6 +45,7 @@ export const users = mysqlTable('user', {
 	status: UserStatusEnum.$default(() => 'ACTIVE'),
 	two_factor_method: TwoFactorMethodEnum.$default(() => 'NONE'),
 	two_factor_secret: text('two_factor_secret'),
+	quota: int('quota').notNull().default(1000),
 });
 
 export const oauthAccounts = mysqlTable('oauth_account', {
@@ -59,6 +60,7 @@ export const oauthAccounts = mysqlTable('oauth_account', {
 
 export const userRelations = relations(users, ({ many }) => ({
 	files: many(files),
+	libraries: many(libraries),
 }));
 
 export const files = mysqlTable('file', {
@@ -69,16 +71,65 @@ export const files = mysqlTable('file', {
 	ownerId: varchar('ownerId', { length: 255 })
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
-	createdAt: timestamp('createdAt', { mode: 'date', fsp: 3 }).notNull(),
-	updatedAt: timestamp('updatedAt', { mode: 'date', fsp: 3 }).notNull(),
+	size: int('size').notNull(),
+	createdAt: timestamp('createdAt', { mode: 'date', fsp: 3 }).defaultNow(),
+	updatedAt: timestamp('updatedAt', { mode: 'date', fsp: 3 }).defaultNow(),
 });
 
-export const fileRelations = relations(files, ({ one }) => ({
+export const fileRelations = relations(files, ({ one, many }) => ({
 	owner: one(users, {
 		fields: [files.ownerId],
 		references: [users.id],
 	}),
+	many: many(libraries),
 }));
+
+export const libraries = mysqlTable('library', {
+	id: varchar('id', { length: 255 }).notNull().primaryKey(),
+	name: varchar('name', { length: 255 }).notNull(),
+	ownerId: varchar('ownerId', { length: 255 })
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
+	createdAt: timestamp('createdAt', { mode: 'date', fsp: 3 }).defaultNow(),
+	updatedAt: timestamp('updatedAt', { mode: 'date', fsp: 3 }).defaultNow(),
+});
+
+export const libraryRelations = relations(libraries, ({ one, many }) => ({
+	owner: one(users, {
+		fields: [libraries.ownerId],
+		references: [users.id],
+	}),
+	files: many(files),
+}));
+
+export const filesTolibraries = mysqlTable(
+	'files_to_libraries',
+	{
+		libraryId: varchar('libraryId', { length: 255 })
+			.notNull()
+			.references(() => libraries.id, { onDelete: 'cascade' }),
+		fileId: varchar('fileId', { length: 255 })
+			.notNull()
+			.references(() => files.id, { onDelete: 'cascade' }),
+	},
+	(t) => ({
+		pk: primaryKey(t.libraryId, t.fileId),
+	})
+);
+
+export const filesTolibrariesRelations = relations(
+	filesTolibraries,
+	({ one }) => ({
+		library: one(libraries, {
+			fields: [filesTolibraries.libraryId],
+			references: [libraries.id],
+		}),
+		file: one(files, {
+			fields: [filesTolibraries.fileId],
+			references: [files.id],
+		}),
+	})
+);
 
 export const sessionTable = mysqlTable('session', {
 	id: varchar('id', {

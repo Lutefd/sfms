@@ -8,6 +8,20 @@
       "when": 1706356610529,
       "tag": "0000_purple_winter_soldier",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1706363918209,
+      "tag": "0001_special_captain_america",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1706363996549,
+      "tag": "0002_condemned_khan",
+      "breakpoints": true
     }
   ]
 }
