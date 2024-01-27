@@ -68,6 +68,9 @@ export const validateRequest = cache(
 declare module 'lucia' {
 	interface Register {
 		Lucia: typeof lucia;
-		DatabaseUserAttributes: Omit<DatabaseUser, 'id'>;
+		DatabaseUserAttributes: Omit<
+			DatabaseUser,
+			'id' | 'password' | 'two_factor_secret' | 'emailVerified'
+		>;
 	}
 }
