@@ -1,119 +1,11 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "68db3868-3742-49e4-8243-7b82f7e6fe6e",
+  "id": "7049d029-11b4-414a-ba54-299bd31d1198",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "s3-sfms_account": {
-      "name": "s3-sfms_account",
-      "columns": {
-        "userId": {
-          "name": "userId",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "type": {
-          "name": "type",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "provider": {
-          "name": "provider",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "providerAccountId": {
-          "name": "providerAccountId",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "refresh_token": {
-          "name": "refresh_token",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "access_token": {
-          "name": "access_token",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "expires_at": {
-          "name": "expires_at",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "token_type": {
-          "name": "token_type",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "scope": {
-          "name": "scope",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "id_token": {
-          "name": "id_token",
-          "type": "varchar(2048)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "session_state": {
-          "name": "session_state",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "s3-sfms_account_userId_s3-sfms_user_id_fk": {
-          "name": "s3-sfms_account_userId_s3-sfms_user_id_fk",
-          "tableFrom": "s3-sfms_account",
-          "tableTo": "s3-sfms_user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "s3-sfms_account_provider_providerAccountId_pk": {
-          "name": "s3-sfms_account_provider_providerAccountId_pk",
-          "columns": [
-            "provider",
-            "providerAccountId"
-          ]
-        }
-      },
-      "uniqueConstraints": {}
-    },
-    "s3-sfms_emailTwoFactorConfirmation": {
-      "name": "s3-sfms_emailTwoFactorConfirmation",
+    "s3-sfms_email_two_factor_confirmation": {
+      "name": "s3-sfms_email_two_factor_confirmation",
       "columns": {
         "id": {
           "name": "id",
@@ -132,9 +24,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "s3-sfms_emailTwoFactorConfirmation_userId_s3-sfms_user_id_fk": {
-          "name": "s3-sfms_emailTwoFactorConfirmation_userId_s3-sfms_user_id_fk",
-          "tableFrom": "s3-sfms_emailTwoFactorConfirmation",
+        "s3-sfms_email_two_factor_confirmation_userId_s3-sfms_user_id_fk": {
+          "name": "s3-sfms_email_two_factor_confirmation_userId_s3-sfms_user_id_fk",
+          "tableFrom": "s3-sfms_email_two_factor_confirmation",
           "tableTo": "s3-sfms_user",
           "columnsFrom": [
             "userId"
@@ -148,16 +40,16 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "s3-sfms_emailTwoFactorConfirmation_userId_unique": {
-          "name": "s3-sfms_emailTwoFactorConfirmation_userId_unique",
+        "s3-sfms_email_two_factor_confirmation_userId_unique": {
+          "name": "s3-sfms_email_two_factor_confirmation_userId_unique",
           "columns": [
             "userId"
           ]
         }
       }
     },
-    "s3-sfms_emailTwoFactorVerificationToken": {
-      "name": "s3-sfms_emailTwoFactorVerificationToken",
+    "s3-sfms_email_two_factor_verificationToken": {
+      "name": "s3-sfms_email_two_factor_verificationToken",
       "columns": {
         "id": {
           "name": "id",
@@ -192,14 +84,14 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "s3-sfms_emailTwoFactorVerificationToken_email_unique": {
-          "name": "s3-sfms_emailTwoFactorVerificationToken_email_unique",
+        "s3-sfms_email_two_factor_verificationToken_email_unique": {
+          "name": "s3-sfms_email_two_factor_verificationToken_email_unique",
           "columns": [
             "email"
           ]
         },
-        "s3-sfms_emailTwoFactorVerificationToken_token_unique": {
-          "name": "s3-sfms_emailTwoFactorVerificationToken_token_unique",
+        "s3-sfms_email_two_factor_verificationToken_token_unique": {
+          "name": "s3-sfms_email_two_factor_verificationToken_token_unique",
           "columns": [
             "token"
           ]
@@ -285,8 +177,66 @@
       },
       "uniqueConstraints": {}
     },
-    "s3-sfms_passwordResetToken": {
-      "name": "s3-sfms_passwordResetToken",
+    "s3-sfms_oauth_account": {
+      "name": "s3-sfms_oauth_account",
+      "columns": {
+        "provider_id": {
+          "name": "provider_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "provider_user_id": {
+          "name": "provider_user_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "s3-sfms_oauth_account_user_id_s3-sfms_user_id_fk": {
+          "name": "s3-sfms_oauth_account_user_id_s3-sfms_user_id_fk",
+          "tableFrom": "s3-sfms_oauth_account",
+          "tableTo": "s3-sfms_user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "s3-sfms_oauth_account_provider_id": {
+          "name": "s3-sfms_oauth_account_provider_id",
+          "columns": [
+            "provider_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "s3-sfms_oauth_account_provider_user_id_unique": {
+          "name": "s3-sfms_oauth_account_provider_user_id_unique",
+          "columns": [
+            "provider_user_id"
+          ]
+        }
+      }
+    },
+    "s3-sfms_password_reset_token": {
+      "name": "s3-sfms_password_reset_token",
       "columns": {
         "id": {
           "name": "id",
@@ -321,19 +271,70 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "s3-sfms_passwordResetToken_email_unique": {
-          "name": "s3-sfms_passwordResetToken_email_unique",
+        "s3-sfms_password_reset_token_email_unique": {
+          "name": "s3-sfms_password_reset_token_email_unique",
           "columns": [
             "email"
           ]
         },
-        "s3-sfms_passwordResetToken_token_unique": {
-          "name": "s3-sfms_passwordResetToken_token_unique",
+        "s3-sfms_password_reset_token_token_unique": {
+          "name": "s3-sfms_password_reset_token_token_unique",
           "columns": [
             "token"
           ]
         }
       }
+    },
+    "s3-sfms_session": {
+      "name": "s3-sfms_session",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "s3-sfms_session_user_id_s3-sfms_user_id_fk": {
+          "name": "s3-sfms_session_user_id_s3-sfms_user_id_fk",
+          "tableFrom": "s3-sfms_session",
+          "tableTo": "s3-sfms_user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "s3-sfms_session_id": {
+          "name": "s3-sfms_session_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
     },
     "s3-sfms_user": {
       "name": "s3-sfms_user",
@@ -421,8 +422,8 @@
       },
       "uniqueConstraints": {}
     },
-    "s3-sfms_verificationToken": {
-      "name": "s3-sfms_verificationToken",
+    "s3-sfms_verification_token": {
+      "name": "s3-sfms_verification_token",
       "columns": {
         "id": {
           "name": "id",
@@ -457,14 +458,14 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "s3-sfms_verificationToken_email_unique": {
-          "name": "s3-sfms_verificationToken_email_unique",
+        "s3-sfms_verification_token_email_unique": {
+          "name": "s3-sfms_verification_token_email_unique",
           "columns": [
             "email"
           ]
         },
-        "s3-sfms_verificationToken_token_unique": {
-          "name": "s3-sfms_verificationToken_token_unique",
+        "s3-sfms_verification_token_token_unique": {
+          "name": "s3-sfms_verification_token_token_unique",
           "columns": [
             "token"
           ]
