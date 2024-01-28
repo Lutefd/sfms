@@ -13,15 +13,7 @@ import {
 import { cn } from '@/lib/utils';
 import { DatabaseUserAttributes } from '@/server/auth';
 import { Libraries } from '@/server/db/schema';
-import {
-	AudioLines,
-	Camera,
-	FileText,
-	Film,
-	Library,
-	Music,
-	Video,
-} from 'lucide-react';
+import { AudioLines, Camera, FileText, Film, Library } from 'lucide-react';
 interface SidebarProps {
 	className?: string;
 	user: DatabaseUserAttributes;
@@ -30,8 +22,11 @@ interface SidebarProps {
 
 export function Sidebar({ className, user, libraries }: SidebarProps) {
 	const { isCollapsed } = useLayoutContext();
-
-	const percentageUtilized = (user.current_quota_use / user.quota) * 100;
+	const percentageUtilized = (
+		user.current_quota_use /
+		100000000 /
+		(user.quota / 1000)
+	).toFixed(2);
 	return (
 		<div className={cn('pb-0 h-full relative', className)}>
 			<div className="space-y-4 py-4">
@@ -232,14 +227,16 @@ export function Sidebar({ className, user, libraries }: SidebarProps) {
 										<TooltipTrigger className="w-full">
 											<div className="mt-4">
 												<Progress
-													value={0}
+													value={Number(
+														percentageUtilized
+													)}
 													className="h-1 w-full bg-gray-200 dark:bg-gray-800"
 												/>
 												<div className="flex items-center w-full justify-between">
 													<span className="text-xs text-gray-700 dark:text-gray-200">
 														{(
 															user.current_quota_use /
-															1000
+															1000000000
 														).toFixed(2)}{' '}
 														GB
 													</span>
