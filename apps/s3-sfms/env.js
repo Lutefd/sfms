@@ -29,6 +29,8 @@ export const env = createEnv({
 		SES_SECRET_ACCESS_KEY: z.string().default(''),
 		SES_ACCESS_KEY_ID: z.string().default(''),
 		SES_EMAIL: z.string().default(''),
+		CLOUDFRONT_URL: z.string().default(''),
+		S3_BUCKET: z.string().default(''),
 	},
 
 	/**
@@ -64,6 +66,8 @@ export const env = createEnv({
 		SES_SECRET_ACCESS_KEY: process.env.SES_SECRET_ACCESS_KEY,
 		SES_ACCESS_KEY_ID: process.env.SES_ACCESS_KEY_ID,
 		SES_EMAIL: process.env.SES_EMAIL,
+		CLOUDFRONT_URL: process.env.CLOUDFRONT_URL,
+		S3_BUCKET: process.env.S3_BUCKET,
 
 		// NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 	},
