@@ -4,8 +4,9 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { env } from '@/env';
 import { validateRequest } from '@/server/auth';
 import { dbPromise } from '@/server/db';
-import { files } from '@/server/db/schema';
+import { files, users } from '@/server/db/schema';
 import { generateId } from 'lucia';
+import { updateSession } from './session';
 
 const s3 = new S3Client({
 	credentials: {
@@ -57,4 +58,8 @@ export const saveFileToDb = async ({ name, format, size, key }: File) => {
 		type: format,
 	};
 	await db.insert(files).values(file);
+	await db.update(users).set({
+		current_quota_use: user.current_quota_use + size,
+	});
+	await updateSession();
 };
