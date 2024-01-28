@@ -12,12 +12,37 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@radix-ui/react-dropdown-menu';
-import { FileIcon, ImageIcon, UploadIcon, VideoIcon } from 'lucide-react';
+import {
+	Check,
+	FileIcon,
+	ImageIcon,
+	UploadIcon,
+	VideoIcon,
+} from 'lucide-react';
 import Dropzone from 'react-dropzone';
 
-import React from 'react';
+import { useState, useTransition } from 'react';
+import { generatePresignedUrl, saveFileToDb } from '@/actions/s3';
+import { Progress } from '@/components/ui/progress';
 
 function UploadButton() {
+	const [isPending, startTransition] = useTransition();
+	const [uploadProgress, setUploadProgress] = useState<number>(0);
+	const startSimulatedProgress = () => {
+		setUploadProgress(0);
+
+		const interval = setInterval(() => {
+			setUploadProgress((prevProgress) => {
+				if (prevProgress >= 95) {
+					clearInterval(interval);
+					return prevProgress;
+				}
+				return prevProgress + 5;
+			});
+		}, 500);
+		return interval;
+	};
+
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -34,7 +59,48 @@ function UploadButton() {
 				<Dropzone
 					multiple={false}
 					onDrop={async (acceptedFile) => {
-						console.log(acceptedFile);
+						const file = acceptedFile[0];
+						const fileName = file.name;
+						const fileType = file.type;
+						const fileSize = file.size;
+						startTransition(async () => {
+							startSimulatedProgress();
+							const signedUrl = await generatePresignedUrl(
+								fileName,
+								fileType
+							);
+							if (signedUrl.error) {
+								console.log(signedUrl.error);
+								return;
+							}
+							if (!signedUrl.url) {
+								console.log('signedUrl.url is undefined');
+								return;
+							}
+							await fetch(signedUrl.url, {
+								body: file,
+								method: 'PUT',
+								headers: {
+									'Content-Type': fileType,
+									'Content-Disposition': `inline; filename="${file.name}"`,
+								},
+							});
+							const { hostname, pathname } = new URL(
+								signedUrl.url
+							);
+							const splitPath = pathname
+								.split('/')
+								.filter(Boolean);
+							const key = splitPath[splitPath.length - 1];
+							await saveFileToDb({
+								name: fileName,
+								format: fileType,
+								size: fileSize,
+								key,
+							});
+
+							setUploadProgress(100);
+						});
 					}}
 				>
 					{({ getRootProps, getInputProps, acceptedFiles }) => (
@@ -84,7 +150,20 @@ function UploadButton() {
 				</Dropzone>
 
 				<DialogFooter>
-					<Button type="submit">Upload</Button>
+					{isPending ? (
+						<div className="mx-auto mt-4 w-full max-w-xs">
+							<Progress
+								value={uploadProgress}
+								className="h-1 w-full bg-primary"
+							/>
+						</div>
+					) : null}
+					{!isPending && uploadProgress === 100 && (
+						<div className="bg-emerald-500/15 p-3 rounded-md w-full flex items-center gap-x-2 text-sm text-emerald-500">
+							<Check className="h-4 w-4" />
+							<p>Upload Completo!</p>
+						</div>
+					)}
 				</DialogFooter>
 			</DialogContent>{' '}
 		</Dialog>
