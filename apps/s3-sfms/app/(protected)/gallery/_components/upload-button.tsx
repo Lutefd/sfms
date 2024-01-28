@@ -24,10 +24,12 @@ import Dropzone from 'react-dropzone';
 import { useState, useTransition } from 'react';
 import { generatePresignedUrl, saveFileToDb } from '@/actions/s3';
 import { Progress } from '@/components/ui/progress';
+import { useRouter } from 'next/navigation';
 
 function UploadButton() {
 	const [isPending, startTransition] = useTransition();
 	const [uploadProgress, setUploadProgress] = useState<number>(0);
+	const router = useRouter();
 	const startSimulatedProgress = () => {
 		setUploadProgress(0);
 
@@ -44,7 +46,14 @@ function UploadButton() {
 	};
 
 	return (
-		<Dialog>
+		<Dialog
+			onOpenChange={(open) => {
+				if (!open) {
+					router.refresh();
+				}
+				setUploadProgress(0);
+			}}
+		>
 			<DialogTrigger asChild>
 				<Button>Adicionar Arquivos</Button>
 			</DialogTrigger>
@@ -154,7 +163,7 @@ function UploadButton() {
 						<div className="mx-auto mt-4 w-full max-w-xs">
 							<Progress
 								value={uploadProgress}
-								className="h-1 w-full bg-primary"
+								className="h-1 w-full "
 							/>
 						</div>
 					) : null}
