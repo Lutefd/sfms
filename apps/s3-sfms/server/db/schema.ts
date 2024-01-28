@@ -23,6 +23,7 @@ import { relations } from 'drizzle-orm';
 export const mysqlTable = mysqlTableCreator((name) => `s3-sfms_${name}`);
 export type SelectSession = typeof sessionTable._.inferSelect;
 export type DatabaseUser = typeof users._.inferSelect;
+export type Libraries = typeof libraries._.inferSelect;
 
 export const RoleEnum = mysqlEnum('role_enum', ['ADMIN', 'USER']);
 export const UserStatusEnum = mysqlEnum('user_status_enum', [
