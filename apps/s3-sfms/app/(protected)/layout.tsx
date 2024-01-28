@@ -14,6 +14,7 @@ import { LayoutContextProvider } from '@/components/context/layoutContext';
 import ResizableMenu from './_components/resizeble-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { getLibrariesByUserId } from '@/lib/libraries';
 
 const mono = JetBrains_Mono({ subsets: ['latin'] });
 export default async function RootLayout({
@@ -25,6 +26,7 @@ export default async function RootLayout({
 	if (!user) {
 		redirect('/auth/login');
 	}
+	const libraries = await getLibrariesByUserId(user.id);
 	return (
 		<div className="flex h-full flex-col">
 			<div className="border-b">
@@ -52,7 +54,7 @@ export default async function RootLayout({
 			>
 				<LayoutContextProvider>
 					<ResizableMenu>
-						<Sidebar user={user} />
+						<Sidebar user={user} libraries={libraries} />
 					</ResizableMenu>
 				</LayoutContextProvider>
 				<ResizableHandle withHandle />
