@@ -76,5 +76,5 @@ declare module 'lucia' {
 
 export type DatabaseUserAttributes = Omit<
 	DatabaseUser,
-	'id' | 'password' | 'two_factor_secret' | 'emailVerified'
+	'password' | 'two_factor_secret' | 'emailVerified'
 >;
