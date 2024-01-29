@@ -39,21 +39,21 @@ function LoginForm() {
 			setError('');
 			setSuccess('');
 			login(data).then((res) => {
-				if (res.error) {
+				if (res?.error) {
 					form.reset();
 					setError(res?.error);
 					setShowTwoFactor(false);
 				}
-				if (res.success) {
+				if (res?.success) {
 					form.reset();
 					setSuccess(res?.success);
-					if (res.redirect) {
+					if (res?.redirect) {
 						setTimeout(() => {
 							router.push('/gallery');
 						}, 500);
 					}
 				}
-				if (res.twoFactor) {
+				if (res?.twoFactor) {
 					setShowTwoFactor(true);
 				}
 			});
