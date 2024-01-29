@@ -1,4 +1,4 @@
-import { validateRequest } from '@/server/auth';
+import { readSession } from '@/actions/session';
 import { redirect } from 'next/navigation';
 
 export default async function RootLayout({
@@ -6,8 +6,8 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const { session } = await validateRequest();
-	if (session) {
+	const user = await readSession();
+	if (user) {
 		redirect('/gallery');
 	}
 	return (

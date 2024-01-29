@@ -20,8 +20,12 @@ export const readSession = async () => {
 	if (!userSession) {
 		return null;
 	}
-	const decodedUserSession = decodeBase64(userSession?.value);
-	const decodedUser = new TextDecoder().decode(decodedUserSession);
-	const user = JSON.parse(decodedUser);
-	return user as DatabaseUserAttributes;
+	try {
+		const decodedUserSession = decodeBase64(userSession?.value);
+		const decodedUser = new TextDecoder().decode(decodedUserSession);
+		const user = JSON.parse(decodedUser);
+		return user as DatabaseUserAttributes;
+	} catch (error) {
+		return null;
+	}
 };
