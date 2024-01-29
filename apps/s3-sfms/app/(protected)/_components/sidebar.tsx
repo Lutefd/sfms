@@ -104,7 +104,7 @@ export function Sidebar({ className, user, libraries }: SidebarProps) {
 										side="right"
 										className="flex items-center gap-4"
 									>
-										PDFs
+										Documentos
 									</TooltipContent>
 								</Tooltip>
 							) : (
@@ -113,7 +113,7 @@ export function Sidebar({ className, user, libraries }: SidebarProps) {
 									className="w-full justify-start"
 								>
 									<FileText className="mr-2 h-4 w-4" />
-									PDFs
+									Documentos
 								</Button>
 							)}
 							{isCollapsed ? (
