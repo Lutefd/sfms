@@ -4,6 +4,7 @@ import {
 	emailTwoFactorVerificationToken,
 } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
+import { generateId } from 'lucia';
 
 export const getEmailTwoFactorToken = async (token: string) => {
 	const db = await dbPromise;
@@ -45,7 +46,9 @@ export const getEmailTwoFactorConfirmation = async (userId: string) => {
 
 export const generateEmailTwoFactorConfirmation = async (userId: string) => {
 	const db = await dbPromise;
+	const id = generateId(15);
 	await db.insert(emailTwoFactorConfirmation).values({
+		id,
 		userId,
 	});
 };
