@@ -58,7 +58,7 @@ export default async function RootLayout({
 					</ResizableMenu>
 				</LayoutContextProvider>
 				<ResizableHandle withHandle />
-				<ResizablePanel defaultSize={900}>
+				<ResizablePanel defaultSize={87}>
 					<ScrollArea className="h-full px-1">{children}</ScrollArea>
 				</ResizablePanel>
 			</ResizablePanelGroup>
