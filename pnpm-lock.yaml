@@ -74,7 +74,7 @@ importers:
         version: 3.3.4(react-hook-form@7.49.3)
       '@lucia-auth/adapter-drizzle':
         specifier: 1.0.0
-        version: 1.0.0(lucia@3.0.0)
+        version: 1.0.0(lucia@3.0.1)
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2
@@ -139,8 +139,8 @@ importers:
         specifier: ^0.29.3
         version: 0.29.3(@planetscale/database@1.14.0)(@types/react@18.2.46)(mysql2@3.9.0)(react@18.2.0)
       lucia:
-        specifier: 3.0.0
-        version: 3.0.0
+        specifier: 3.0.1
+        version: 3.0.1
       lucide-react:
         specifier: ^0.316.0
         version: 0.316.0(react@18.2.0)
@@ -1666,12 +1666,12 @@ packages:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  /@lucia-auth/adapter-drizzle@1.0.0(lucia@3.0.0):
+  /@lucia-auth/adapter-drizzle@1.0.0(lucia@3.0.1):
     resolution: {integrity: sha512-3NJbAgEcgFn1bJ+s/XVBdatnQZCtSjKJ880H25SVB9X+V2jhYfsSu/mcW3PSis5bLial188Pd4oNTTHonh+6vg==}
     peerDependencies:
       lucia: 3.x
     dependencies:
-      lucia: 3.0.0
+      lucia: 3.0.1
     dev: false
 
   /@microsoft/tsdoc-config@0.16.2:
@@ -6108,8 +6108,8 @@ packages:
       es5-ext: 0.10.62
     dev: true
 
-  /lucia@3.0.0:
-    resolution: {integrity: sha512-60NQqjKuaqPrjHL10CQ1j3rQy8qwKd3XpSNNnNcZyZI+4w1QFJdtNcR4l0dZJ4kJ0DdwI/943yplL47V7IZbGQ==}
+  /lucia@3.0.1:
+    resolution: {integrity: sha512-srwUkTCGgr6N4mFpaKZVZy5kwiRZdsrbIDv9Wrjar+xyw1MjojYQQ7oRbegjRWOZ3yI8xOOclK3sz/rga2J7/w==}
     dependencies:
       oslo: 1.0.1
     dev: false
