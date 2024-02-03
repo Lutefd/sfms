@@ -1,18 +1,14 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import {
-	timestamp,
-	mysqlTableCreator,
-	text,
-	primaryKey,
-	int,
-	mysqlEnum,
-	varchar,
-	datetime,
-} from 'drizzle-orm/mysql-core';
 import cuid2 from '@paralleldrive/cuid2';
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
+import {
+	integer,
+	primaryKey,
+	sqliteTableCreator,
+	text,
+} from 'drizzle-orm/sqlite-core';
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -20,42 +16,36 @@ import { relations } from 'drizzle-orm';
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const mysqlTable = mysqlTableCreator((name) => `s3-sfms_${name}`);
+export const sqliteTable = sqliteTableCreator((name) => `s3-sfms_${name}`);
 export type SelectSession = typeof sessionTable._.inferSelect;
 export type DatabaseUser = typeof users._.inferSelect;
 export type Libraries = typeof libraries._.inferSelect;
 
-export const RoleEnum = mysqlEnum('role_enum', ['ADMIN', 'USER']);
-export const UserStatusEnum = mysqlEnum('user_status_enum', [
-	'ACTIVE',
-	'BLOCKED',
-]);
-export const TwoFactorMethodEnum = mysqlEnum('two_factor_method_enum', [
-	'NONE',
-	'EMAIL',
-	'AUTHENTICATOR',
-]);
-export const users = mysqlTable('user', {
-	id: varchar('id', { length: 255 }).notNull().primaryKey(),
-	name: varchar('name', { length: 255 }),
-	email: varchar('email', { length: 255 }).notNull(),
-	emailVerified: timestamp('emailVerified', { mode: 'date', fsp: 3 }),
-	password: varchar('password', { length: 255 }),
+export const users = sqliteTable('user', {
+	id: text('id', { length: 255 }).notNull().primaryKey(),
+	name: text('name', { length: 255 }),
+	email: text('email', { length: 255 }).notNull(),
+	emailVerified: integer('emailVerified', { mode: 'timestamp' }),
+	password: text('password', { length: 255 }),
 	image: text('image'),
-	role: RoleEnum.$default(() => 'USER'),
-	status: UserStatusEnum.$default(() => 'ACTIVE'),
-	two_factor_method: TwoFactorMethodEnum.$default(() => 'NONE'),
+	role: text('role', { enum: ['ADMIN', 'USER'] }).$default(() => 'USER'),
+	status: text('status', { enum: ['ACTIVE', 'BLOCKED'] }).$default(
+		() => 'ACTIVE'
+	),
+	two_factor_method: text('two_factor_method', {
+		enum: ['NONE', 'EMAIL', 'AUTHENTICATOR'],
+	}).$default(() => 'NONE'),
 	two_factor_secret: text('two_factor_secret'),
-	quota: int('quota').notNull().default(1000),
-	current_quota_use: int('current_quota_use').notNull().default(0),
+	quota: integer('quota').notNull().default(1000),
+	current_quota_use: integer('current_quota_use').notNull().default(0),
 });
 
-export const oauthAccounts = mysqlTable('oauth_account', {
-	provider_id: varchar('provider_id', { length: 255 }).notNull().primaryKey(),
-	provider_user_id: varchar('provider_user_id', { length: 255 })
+export const oauthAccounts = sqliteTable('oauth_account', {
+	provider_id: text('provider_id', { length: 255 }).notNull().primaryKey(),
+	provider_user_id: text('provider_user_id', { length: 255 })
 		.notNull()
 		.unique(),
-	user_id: varchar('user_id', { length: 255 })
+	user_id: text('user_id', { length: 255 })
 		.notNull()
 		.references(() => users.id),
 });
@@ -65,17 +55,17 @@ export const userRelations = relations(users, ({ many }) => ({
 	libraries: many(libraries),
 }));
 
-export const files = mysqlTable('file', {
-	id: varchar('id', { length: 255 }).notNull().primaryKey(),
-	title: varchar('name', { length: 255 }).notNull(),
-	type: varchar('type', { length: 255 }).notNull(),
+export const files = sqliteTable('file', {
+	id: text('id', { length: 255 }).notNull().primaryKey(),
+	title: text('name', { length: 255 }).notNull(),
+	type: text('type', { length: 255 }).notNull(),
 	url: text('url').notNull(),
-	ownerId: varchar('ownerId', { length: 255 })
+	ownerId: text('ownerId', { length: 255 })
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
-	size: int('size').notNull(),
-	createdAt: timestamp('createdAt', { mode: 'date', fsp: 3 }).defaultNow(),
-	updatedAt: timestamp('updatedAt', { mode: 'date', fsp: 3 }).defaultNow(),
+	size: integer('size').notNull(),
+	createdAt: text('createdAt').default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: text('updatedAt').default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const fileRelations = relations(files, ({ one, many }) => ({
@@ -83,17 +73,17 @@ export const fileRelations = relations(files, ({ one, many }) => ({
 		fields: [files.ownerId],
 		references: [users.id],
 	}),
-	many: many(libraries),
+	library: many(filesTolibraries),
 }));
 
-export const libraries = mysqlTable('library', {
-	id: varchar('id', { length: 255 }).notNull().primaryKey(),
-	name: varchar('name', { length: 255 }).notNull(),
-	ownerId: varchar('ownerId', { length: 255 })
+export const libraries = sqliteTable('library', {
+	id: text('id', { length: 255 }).notNull().primaryKey(),
+	name: text('name', { length: 255 }).notNull(),
+	ownerId: text('ownerId', { length: 255 })
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
-	createdAt: timestamp('createdAt', { mode: 'date', fsp: 3 }).defaultNow(),
-	updatedAt: timestamp('updatedAt', { mode: 'date', fsp: 3 }).defaultNow(),
+	createdAt: text('createdAt').default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: text('updatedAt').default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const libraryRelations = relations(libraries, ({ one, many }) => ({
@@ -101,16 +91,16 @@ export const libraryRelations = relations(libraries, ({ one, many }) => ({
 		fields: [libraries.ownerId],
 		references: [users.id],
 	}),
-	files: many(files),
+	files: many(filesTolibraries),
 }));
 
-export const filesTolibraries = mysqlTable(
+export const filesTolibraries = sqliteTable(
 	'files_to_libraries',
 	{
-		libraryId: varchar('libraryId', { length: 255 })
+		libraryId: text('libraryId', { length: 255 })
 			.notNull()
 			.references(() => libraries.id, { onDelete: 'cascade' }),
-		fileId: varchar('fileId', { length: 255 })
+		fileId: text('fileId', { length: 255 })
 			.notNull()
 			.references(() => files.id, { onDelete: 'cascade' }),
 	},
@@ -133,48 +123,48 @@ export const filesTolibrariesRelations = relations(
 	})
 );
 
-export const sessionTable = mysqlTable('session', {
-	id: varchar('id', {
+export const sessionTable = sqliteTable('session', {
+	id: text('id', {
 		length: 255,
 	}).primaryKey(),
-	userId: varchar('user_id', {
+	userId: text('user_id', {
 		length: 255,
 	})
 		.notNull()
 		.references(() => users.id),
 
-	expiresAt: datetime('expires_at').notNull(),
+	expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
 });
 
-export const verificationToken = mysqlTable('verification_token', {
+export const verificationToken = sqliteTable('verification_token', {
 	id: text('id').notNull(),
-	email: varchar('email', { length: 255 }).notNull().unique(),
-	token: varchar('token', { length: 255 }).notNull().unique(),
-	expires: timestamp('expires', { mode: 'date' }).notNull(),
+	email: text('email', { length: 255 }).notNull().unique(),
+	token: text('token', { length: 255 }).notNull().unique(),
+	expires: integer('expires', { mode: 'timestamp' }).notNull(),
 });
 
-export const passwordResetToken = mysqlTable('password_reset_token', {
+export const passwordResetToken = sqliteTable('password_reset_token', {
 	id: text('id').notNull(),
-	email: varchar('email', { length: 255 }).notNull().unique(),
-	token: varchar('token', { length: 255 }).notNull().unique(),
-	expires: timestamp('expires', { mode: 'date' }).notNull(),
+	email: text('email', { length: 255 }).notNull().unique(),
+	token: text('token', { length: 255 }).notNull().unique(),
+	expires: integer('expires', { mode: 'timestamp' }).notNull(),
 });
 
-export const emailTwoFactorVerificationToken = mysqlTable(
+export const emailTwoFactorVerificationToken = sqliteTable(
 	'email_two_factor_verificationToken',
 	{
 		id: text('id').notNull(),
-		email: varchar('email', { length: 255 }).notNull().unique(),
-		token: varchar('token', { length: 255 }).notNull().unique(),
-		expires: timestamp('expires', { mode: 'date' }).notNull(),
+		email: text('email', { length: 255 }).notNull().unique(),
+		token: text('token', { length: 255 }).notNull().unique(),
+		expires: integer('expires', { mode: 'timestamp' }).notNull(),
 	}
 );
 
-export const emailTwoFactorConfirmation = mysqlTable(
+export const emailTwoFactorConfirmation = sqliteTable(
 	'email_two_factor_confirmation',
 	{
 		id: text('id').notNull(),
-		userId: varchar('userId', { length: 255 })
+		userId: text('userId', { length: 255 })
 			.notNull()
 			.references(() => users.id, {
 				onDelete: 'cascade',

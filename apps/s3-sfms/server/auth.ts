@@ -1,12 +1,12 @@
 import { Lucia } from 'lucia';
 import { DrizzleMySQLAdapter } from '@lucia-auth/adapter-drizzle';
-import { authDb, dbPromise } from './db';
 import { DatabaseUser, sessionTable, users } from './db/schema';
+import { db } from './db';
 import { cache } from 'react';
 import type { Session, User } from 'lucia';
 
 import { cookies } from 'next/headers';
-const adapter = new DrizzleMySQLAdapter(authDb, sessionTable, users); // your adapter
+const adapter = new DrizzleMySQLAdapter(db, sessionTable, users); // your adapter
 
 export const lucia = new Lucia(adapter, {
 	getUserAttributes(databaseUserAttributes) {

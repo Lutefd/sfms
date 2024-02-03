@@ -1,9 +1,8 @@
-import { dbPromise } from '@/server/db';
+import { db } from '@/server/db';
 import { users } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
 
 export const getUserByEmail = async (email: string) => {
-	const db = await dbPromise;
 	try {
 		const user = await db.query.users.findFirst({
 			where: eq(users.email, email),
@@ -16,8 +15,6 @@ export const getUserByEmail = async (email: string) => {
 };
 
 export const getUserById = async (id: string) => {
-	const db = await dbPromise;
-
 	try {
 		const user = await db.query.users.findFirst({
 			where: eq(users.id, id),
@@ -30,8 +27,6 @@ export const getUserById = async (id: string) => {
 };
 
 export const setDefaultValues = async (id: string) => {
-	const db = await dbPromise;
-
 	try {
 		const user = await db
 			.update(users)
@@ -50,8 +45,6 @@ export const setDefaultValues = async (id: string) => {
 };
 
 export const setUserRole = async (id: string, role: 'ADMIN' | 'USER') => {
-	const db = await dbPromise;
-
 	try {
 		const user = await db
 			.update(users)
@@ -70,8 +63,6 @@ export const setUserStatus = async (
 	id: string,
 	status: 'ACTIVE' | 'BLOCKED'
 ) => {
-	const db = await dbPromise;
-
 	try {
 		const user = await db
 			.update(users)
