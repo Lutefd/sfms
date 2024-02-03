@@ -29,7 +29,6 @@ import { useRouter } from 'next/navigation';
 function UploadButton() {
 	const [isPending, startTransition] = useTransition();
 	const [uploadProgress, setUploadProgress] = useState<number>(0);
-	const router = useRouter();
 	const startSimulatedProgress = () => {
 		setUploadProgress(0);
 
@@ -46,7 +45,13 @@ function UploadButton() {
 	};
 
 	return (
-		<Dialog>
+		<Dialog
+			onOpenChange={(open) => {
+				if (!open) {
+					setUploadProgress(0);
+				}
+			}}
+		>
 			<DialogTrigger asChild>
 				<Button>Adicionar Arquivos</Button>
 			</DialogTrigger>
