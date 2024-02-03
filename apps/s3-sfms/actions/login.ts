@@ -32,7 +32,6 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 	const { email, password, code } = validateFields.data;
 
 	const existingUser = await getUserByEmail(email);
-
 	if (!existingUser || !existingUser.email) {
 		return {
 			error: 'Usuário não encontrado',
@@ -104,36 +103,31 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 			};
 		}
 	}
-	try {
-		const validPassword = await new Argon2id().verify(
-			existingUser.password,
-			password
+	const validPassword = await new Argon2id().verify(
+		existingUser.password,
+		password
+	);
+	if (validPassword) {
+		console.log('a');
+		const session = await lucia.createSession(existingUser.id, {});
+		const sessionCookie = lucia.createSessionCookie(session.id);
+		cookies().set(
+			sessionCookie.name,
+			sessionCookie.value,
+			sessionCookie.attributes
 		);
-		if (validPassword) {
-			const session = await lucia.createSession(existingUser.id, {});
-			const sessionCookie = lucia.createSessionCookie(session.id);
-			cookies().set(
-				sessionCookie.name,
-				sessionCookie.value,
-				sessionCookie.attributes
-			);
-			const { user } = await validateRequest();
-			const stringfiedUser = JSON.stringify(user);
-			const data = new TextEncoder().encode(stringfiedUser);
-			const encodedUser = encodeBase64(data);
+		const { user } = await validateRequest();
+		const stringfiedUser = JSON.stringify(user);
+		const data = new TextEncoder().encode(stringfiedUser);
+		const encodedUser = encodeBase64(data);
 
-			cookies().set('userSession', encodedUser, {
-				secure: process.env.NODE_ENV !== 'development',
-				sameSite: 'strict',
-			});
-			return {
-				success: 'Login realizado com sucesso',
-				redirect: true,
-			};
-		}
-	} catch (error) {
+		cookies().set('userSession', encodedUser, {
+			secure: process.env.NODE_ENV !== 'development',
+			sameSite: 'strict',
+		});
 		return {
-			error: 'Senha inválida',
+			success: 'Login realizado com sucesso',
+			redirect: true,
 		};
 	}
 };

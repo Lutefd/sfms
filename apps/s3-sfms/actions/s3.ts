@@ -3,7 +3,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { env } from '@/env';
 import { validateRequest } from '@/server/auth';
-import { dbPromise } from '@/server/db';
+import { db } from '@/server/db';
 import { files, users } from '@/server/db/schema';
 import { generateId } from 'lucia';
 import { updateSession } from './session';
@@ -41,7 +41,6 @@ interface File {
 	key: string;
 }
 export const saveFileToDb = async ({ name, format, size, key }: File) => {
-	const db = await dbPromise;
 	const { session, user } = await validateRequest();
 	if (!session) {
 		return {

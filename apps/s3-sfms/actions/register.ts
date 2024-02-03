@@ -1,7 +1,7 @@
 'use server';
 import { RegisterSchema } from '@/schemas';
 import { z } from 'zod';
-import { dbPromise } from '@/server/db';
+import { db } from '@/server/db';
 import { eq } from 'drizzle-orm';
 import { users } from '@/server/db/schema';
 import { generateVerificationToken } from '@/lib/token';
@@ -10,7 +10,6 @@ import { generateId } from 'lucia';
 import { Argon2id } from 'oslo/password';
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
-	const db = await dbPromise;
 	const validateFields = RegisterSchema.safeParse(values);
 
 	if (!validateFields.success) {

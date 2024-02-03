@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 import { SettingsSchema } from '@/schemas';
 import { getUserByEmail, getUserById } from '@/lib/user';
-import { dbPromise } from '@/server/db';
+import { db } from '@/server/db';
 import { users } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { generateVerificationToken } from '@/lib/token';
@@ -44,8 +44,6 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
 		values.password = hashedPassword;
 		values.newPassword = undefined;
 	}
-
-	const db = await dbPromise;
 
 	if (
 		values.two_factor_method &&

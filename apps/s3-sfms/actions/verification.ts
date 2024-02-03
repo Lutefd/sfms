@@ -2,12 +2,11 @@
 
 import { getVerificationTokenByToken } from '@/lib/token';
 import { getUserByEmail } from '@/lib/user';
-import { dbPromise } from '@/server/db';
+import { db } from '@/server/db';
 import { users, verificationToken } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
 
 export async function verificateToken(token: string) {
-	const db = await dbPromise;
 	const existingToken = await getVerificationTokenByToken(token);
 	console.log('token in verification', token);
 	console.log('existingToken in verification', existingToken);

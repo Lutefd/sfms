@@ -7,7 +7,7 @@ import { sendPasswordResetEmail } from './email';
 import { generatePasswordResetToken } from '@/lib/token';
 import { getPasswordResetTokenbyToken } from '@/lib/password-reset';
 import bcrypt from 'bcryptjs';
-import { dbPromise } from '@/server/db';
+import { db } from '@/server/db';
 import { passwordResetToken, users } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
 
@@ -39,7 +39,6 @@ export const resetPassword = async (
 	values: z.infer<typeof ResetPasswordSchema>,
 	token?: string | null
 ) => {
-	const db = await dbPromise;
 	if (!token) {
 		return {
 			error: 'Token inválido',

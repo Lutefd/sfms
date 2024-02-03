@@ -1,13 +1,12 @@
 'use server';
 
-import { dbPromise } from '@/server/db';
+import { db } from '@/server/db';
 import { users } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { decodeHex } from 'oslo/encoding';
 import { TOTPController } from 'oslo/otp';
 
 export const verifyTOTP = async (code: string, userId: string) => {
-	const db = await dbPromise;
 	const secret = await db.query.users.findFirst({
 		where: eq(users.id, userId),
 		columns: {
@@ -34,7 +33,6 @@ export const verifyTOTP = async (code: string, userId: string) => {
 };
 
 export const verifyTOTPInConfig = async (code: string, userId: string) => {
-	const db = await dbPromise;
 	const secret = await db.query.users.findFirst({
 		where: eq(users.id, userId),
 		columns: {
