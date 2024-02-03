@@ -14,6 +14,8 @@ import { cn } from '@/lib/utils';
 import { DatabaseUserAttributes } from '@/server/auth';
 import { Libraries } from '@/server/db/schema';
 import { AudioLines, Camera, FileText, Film, Library } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 interface SidebarProps {
 	className?: string;
 	user: DatabaseUserAttributes;
@@ -22,6 +24,8 @@ interface SidebarProps {
 
 export function Sidebar({ className, user, libraries }: SidebarProps) {
 	const { isCollapsed } = useLayoutContext();
+	const pathname = usePathname();
+	const isGallery = pathname === '/gallery/images';
 	const percentageUtilized = (
 		user.current_quota_use /
 		100000000 /
@@ -33,36 +37,49 @@ export function Sidebar({ className, user, libraries }: SidebarProps) {
 				<TooltipProvider delayDuration={0}>
 					<div className={isCollapsed ? ` py-2` : `px-3 py-2`}>
 						{!isCollapsed && (
-							<h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
+							<Link
+								href={'/gallery'}
+								className=" px-4 text-lg font-semibold tracking-tight"
+							>
 								Galeria
-							</h2>
+							</Link>
 						)}
-						<div className="space-y-1 transition-all ease-in duration-300">
+						<div className="space-y-1 mt-2 transition-all ease-in duration-300">
 							{isCollapsed ? (
-								<Tooltip delayDuration={0}>
-									<TooltipTrigger>
-										<Button
-											variant="ghost"
-											className="w-full justify-start"
+								<Link href={'/gallery/images'}>
+									<Tooltip delayDuration={0}>
+										<TooltipTrigger>
+											<Button
+												variant={
+													isGallery
+														? 'default'
+														: 'ghost'
+												}
+												className="w-full justify-start"
+											>
+												<Camera className=" transition-all ease-in duration-300 h-4 w-4" />
+											</Button>
+										</TooltipTrigger>
+										<TooltipContent
+											side="right"
+											className="flex items-center gap-4"
 										>
-											<Camera className=" transition-all ease-in duration-300 h-4 w-4" />
-										</Button>
-									</TooltipTrigger>
-									<TooltipContent
-										side="right"
-										className="flex items-center gap-4"
-									>
-										Imagens
-									</TooltipContent>
-								</Tooltip>
+											Imagens
+										</TooltipContent>
+									</Tooltip>
+								</Link>
 							) : (
-								<Button
-									variant="ghost"
-									className="w-full justify-start"
-								>
-									<Camera className="mr-2 h-4 w-4" />
-									Imagens
-								</Button>
+								<Link href={'/gallery/images'}>
+									<Button
+										variant={
+											isGallery ? 'default' : 'ghost'
+										}
+										className="w-full justify-start "
+									>
+										<Camera className="mr-2 h-4 w-4" />
+										Imagens
+									</Button>
+								</Link>
 							)}
 							{isCollapsed ? (
 								<Tooltip delayDuration={0}>
