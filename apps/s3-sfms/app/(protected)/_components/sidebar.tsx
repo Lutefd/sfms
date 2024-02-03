@@ -48,7 +48,7 @@ export function Sidebar({ className, user, libraries }: SidebarProps) {
 							{isCollapsed ? (
 								<Link href={'/gallery/images'}>
 									<Tooltip delayDuration={0}>
-										<TooltipTrigger>
+										<TooltipTrigger asChild>
 											<Button
 												variant={
 													isGallery
@@ -83,7 +83,7 @@ export function Sidebar({ className, user, libraries }: SidebarProps) {
 							)}
 							{isCollapsed ? (
 								<Tooltip delayDuration={0}>
-									<TooltipTrigger>
+									<TooltipTrigger asChild>
 										<Button
 											variant="ghost"
 											className="w-full justify-start"
@@ -109,7 +109,7 @@ export function Sidebar({ className, user, libraries }: SidebarProps) {
 							)}
 							{isCollapsed ? (
 								<Tooltip delayDuration={0}>
-									<TooltipTrigger>
+									<TooltipTrigger asChild>
 										<Button
 											variant="ghost"
 											className="w-full justify-start"
@@ -135,7 +135,7 @@ export function Sidebar({ className, user, libraries }: SidebarProps) {
 							)}
 							{isCollapsed ? (
 								<Tooltip delayDuration={0}>
-									<TooltipTrigger>
+									<TooltipTrigger asChild>
 										<Button
 											variant="ghost"
 											className="w-full justify-start"
@@ -162,7 +162,7 @@ export function Sidebar({ className, user, libraries }: SidebarProps) {
 
 							{isCollapsed ? (
 								<Tooltip delayDuration={0}>
-									<TooltipTrigger>
+									<TooltipTrigger asChild>
 										<Button
 											variant="ghost"
 											className="w-full justify-start"
