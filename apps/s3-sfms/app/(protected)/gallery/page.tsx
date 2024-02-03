@@ -17,7 +17,7 @@ async function GalleryPage() {
 	const latestFourFiles = await getFourMostRecentFilesFromUserId(user?.id);
 	return (
 		<div className="flex flex-col px-4">
-			<div className="p-4 flex w-full justify-between items-center">
+			<div className="py-4 flex w-full justify-between items-center">
 				<h1 className="text-2xl font-bold">Galeria</h1>
 				<UploadButton />
 			</div>
@@ -27,7 +27,7 @@ async function GalleryPage() {
 						Seus Arquivos Mais Recentes
 					</h2>
 					{latestFourFiles.length > 0 ? (
-						<div className="grid grid-cols-4 gap-4">
+						<div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4">
 							{latestFourFiles.map((file) => (
 								<CardPreview file={file} />
 							))}
@@ -49,7 +49,7 @@ async function GalleryPage() {
 					<h2 className="text-2xl font-semibold">
 						Suas Bibliotecas Mais Recentes
 					</h2>
-					<div className="grid grid-cols-4 gap-4">
+					<div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4">
 						<img
 							alt="Folder 1"
 							className="aspect-square object-cover border border-gray-200 w-full rounded-lg overflow-hidden dark:border-gray-800"
