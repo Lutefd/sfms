@@ -29,7 +29,7 @@ async function GalleryPage() {
 					{latestFourFiles.length > 0 ? (
 						<div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4">
 							{latestFourFiles.map((file) => (
-								<CardPreview file={file} />
+								<CardPreview file={file} key={file.id} />
 							))}
 						</div>
 					) : (
