@@ -20,6 +20,7 @@ export const sqliteTable = sqliteTableCreator((name) => `s3-sfms_${name}`);
 export type SelectSession = typeof sessionTable._.inferSelect;
 export type DatabaseUser = typeof users._.inferSelect;
 export type Libraries = typeof libraries._.inferSelect;
+export type Files = typeof files._.inferSelect;
 
 export const users = sqliteTable('user', {
 	id: text('id', { length: 255 }).notNull().primaryKey(),
