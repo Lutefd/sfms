@@ -108,7 +108,6 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 		password
 	);
 	if (validPassword) {
-		console.log('a');
 		const session = await lucia.createSession(existingUser.id, {});
 		const sessionCookie = lucia.createSessionCookie(session.id);
 		cookies().set(
