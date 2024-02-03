@@ -14,18 +14,11 @@ export const env = createEnv({
 				(str) => !str.includes('YOUR_DB_URL_HERE'),
 				'You forgot to change the default URL'
 			),
-
+		DB_AUTH_TOKEN: z.string().default(''),
 		BUILD_STATUS: z.enum(['building', 'live']).default('live'),
 		NODE_ENV: z
 			.enum(['development', 'test', 'production'])
 			.default('development'),
-		DB_HOST: z.string().default('localhost'),
-		DB_PORT: z.string().default('5432'),
-		DB_USER: z.string().default('root'),
-		DB_PASSWORD: z.string().default('password'),
-		DB_DATABASE: z.string().default('database'),
-		ACCESS_KEY_ID: z.string().default(''),
-		SECRET_ACCESS_KEY: z.string().default(''),
 		SES_SECRET_ACCESS_KEY: z.string().default(''),
 		SES_ACCESS_KEY_ID: z.string().default(''),
 		SES_EMAIL: z.string().default(''),
@@ -50,15 +43,7 @@ export const env = createEnv({
 		BUILD_STATUS: process.env.BUILD_STATUS,
 		DB_URL: process.env.DB_URL,
 		NODE_ENV: process.env.NODE_ENV,
-		DB_HOST: process.env.DB_HOST,
-		DB_PORT: process.env.DB_PORT,
-		DB_USER: process.env.DB_USER,
-		DB_PASSWORD: process.env.DB_PASSWORD,
-		DB_DATABASE: process.env.DB_DATABASE,
-		RDS_ARN: process.env.RDS_ARN,
-		RDS_SECRET_ARN: process.env.RDS_SECRET_ARN,
-		ACCESS_KEY_ID: process.env.ACCESS_KEY_ID,
-		SECRET_ACCESS_KEY: process.env.SECRET_ACCESS_KEY,
+
 		GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
 		GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
 		GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
@@ -68,6 +53,7 @@ export const env = createEnv({
 		SES_EMAIL: process.env.SES_EMAIL,
 		CLOUDFRONT_URL: process.env.CLOUDFRONT_URL,
 		S3_BUCKET: process.env.S3_BUCKET,
+		DB_AUTH_TOKEN: process.env.DB_AUTH_TOKEN,
 
 		// NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 	},
