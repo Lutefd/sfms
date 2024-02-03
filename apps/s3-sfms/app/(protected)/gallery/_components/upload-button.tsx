@@ -46,14 +46,7 @@ function UploadButton() {
 	};
 
 	return (
-		<Dialog
-			onOpenChange={(open) => {
-				if (!open) {
-					router.refresh();
-				}
-				setUploadProgress(0);
-			}}
-		>
+		<Dialog>
 			<DialogTrigger asChild>
 				<Button>Adicionar Arquivos</Button>
 			</DialogTrigger>
