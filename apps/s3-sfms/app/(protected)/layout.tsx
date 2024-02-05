@@ -9,7 +9,6 @@ import {
 	ResizablePanelGroup,
 } from '@/components/ui/resizable';
 import { Sidebar } from './_components/sidebar';
-import { readSession } from '@/actions/session';
 import { LayoutContextProvider } from '@/components/context/layoutContext';
 import ResizableMenu from './_components/resizeble-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
