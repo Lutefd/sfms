@@ -1,13 +1,12 @@
 import { Lucia } from 'lucia';
 import { DrizzleSQLiteAdapter } from '@lucia-auth/adapter-drizzle';
 import { DatabaseUser, sessionTable, users } from './db/schema';
-import { db } from './db';
+import { authDb } from './db';
 import { cache } from 'react';
 import type { Session, User } from 'lucia';
 
 import { cookies } from 'next/headers';
-// @ts-ignore - lucia doesn't have types for turso
-const adapter = new DrizzleSQLiteAdapter(db, sessionTable, users); // your adapter
+const adapter = new DrizzleSQLiteAdapter(authDb, sessionTable, users);
 
 export const lucia = new Lucia(adapter, {
 	getUserAttributes(databaseUserAttributes) {
