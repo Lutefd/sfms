@@ -19,7 +19,7 @@ async function GalleryPage() {
 		<div className="flex flex-col px-4">
 			<div className="py-4 flex w-full justify-between items-center">
 				<h1 className="text-2xl font-bold">Galeria</h1>
-				<UploadButton />
+				<UploadButton fileType={user!.id} />
 			</div>
 			<div className="flex flex-col gap-6">
 				<div className="space-y-4">
