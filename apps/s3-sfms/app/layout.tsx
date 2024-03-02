@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/sonner';
 
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemesProvider';
+import Providers from './_helpers/providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,15 +21,17 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className={inter.className}>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="dark"
-					enableSystem
-					disableTransitionOnChange
-				>
-					<Toaster />
-					{children}
-				</ThemeProvider>
+				<Providers>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="dark"
+						enableSystem
+						disableTransitionOnChange
+					>
+						<Toaster />
+						{children}
+					</ThemeProvider>
+				</Providers>
 			</body>
 		</html>
 	);
