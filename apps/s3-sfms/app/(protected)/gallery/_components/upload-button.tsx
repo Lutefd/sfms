@@ -10,7 +10,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Label } from '@radix-ui/react-dropdown-menu';
 import {
 	Check,
@@ -24,10 +23,23 @@ import Dropzone from 'react-dropzone';
 import { useState, useTransition } from 'react';
 import { generatePresignedUrl, saveFileToDb } from '@/actions/s3';
 import { Progress } from '@/components/ui/progress';
+import {
+	type QueryClient,
+	useMutation,
+	useQueryClient,
+} from '@tanstack/react-query';
 
-function UploadButton() {
-	const [isPending, startTransition] = useTransition();
+function UploadButton({ fileType }: { fileType: string }) {
+	const queryClient: QueryClient = useQueryClient();
+
 	const [uploadProgress, setUploadProgress] = useState<number>(0);
+	const { mutate, isPending } = useMutation({
+		mutationFn: (file: File) => handleUpload(file),
+		onSuccess: () => {
+			setUploadProgress(100);
+			queryClient.invalidateQueries({ queryKey: [fileType] });
+		},
+	});
 	const startSimulatedProgress = () => {
 		setUploadProgress(0);
 
@@ -46,6 +58,7 @@ function UploadButton() {
 		const fileName = file.name;
 		const fileType = file.type;
 		const fileSize = file.size;
+		startSimulatedProgress();
 		const signedUrl = await generatePresignedUrl(fileName, fileType);
 		if (signedUrl.error) {
 			console.log(signedUrl.error);
@@ -72,6 +85,7 @@ function UploadButton() {
 			size: fileSize,
 			key,
 		});
+		setUploadProgress(100);
 	}
 
 	return (
@@ -97,12 +111,7 @@ function UploadButton() {
 					multiple={false}
 					onDrop={async (acceptedFile) => {
 						const file = acceptedFile[0];
-
-						startTransition(() => {
-							startSimulatedProgress();
-							handleUpload(file);
-							setUploadProgress(100);
-						});
+						mutate(file);
 					}}
 				>
 					{({ getRootProps, getInputProps, acceptedFiles }) => (
