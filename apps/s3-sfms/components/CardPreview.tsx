@@ -72,7 +72,9 @@ function CardPreview({ file }: { file: Files }) {
 					{file.title}
 				</h2>
 				<div className="flex w-full justify-between">
-					<p className="text-muted-foreground">{file.type}</p>
+					<p className="text-muted-foreground">
+						{file.type.split('/')[1]}
+					</p>
 					<p className="text-sm  text-muted-foreground">
 						{new Date(file.updatedAt!).toLocaleDateString('pt-br')}
 					</p>
