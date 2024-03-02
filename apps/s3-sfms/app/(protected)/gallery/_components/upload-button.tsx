@@ -24,7 +24,6 @@ import Dropzone from 'react-dropzone';
 import { useState, useTransition } from 'react';
 import { generatePresignedUrl, saveFileToDb } from '@/actions/s3';
 import { Progress } from '@/components/ui/progress';
-import { useRouter } from 'next/navigation';
 
 function UploadButton() {
 	const [isPending, startTransition] = useTransition();
@@ -43,6 +42,37 @@ function UploadButton() {
 		}, 500);
 		return interval;
 	};
+	async function handleUpload(file: File) {
+		const fileName = file.name;
+		const fileType = file.type;
+		const fileSize = file.size;
+		const signedUrl = await generatePresignedUrl(fileName, fileType);
+		if (signedUrl.error) {
+			console.log(signedUrl.error);
+			return;
+		}
+		if (!signedUrl.url) {
+			console.log('signedUrl.url is undefined');
+			return;
+		}
+		await fetch(signedUrl.url, {
+			body: file,
+			method: 'PUT',
+			headers: {
+				'Content-Type': fileType,
+				'Content-Disposition': `inline; filename="${file.name}"`,
+			},
+		});
+		const { hostname, pathname } = new URL(signedUrl.url);
+		const splitPath = pathname.split('/').filter(Boolean);
+		const key = splitPath[splitPath.length - 1];
+		await saveFileToDb({
+			name: fileName,
+			format: fileType,
+			size: fileSize,
+			key,
+		});
+	}
 
 	return (
 		<Dialog
@@ -67,45 +97,10 @@ function UploadButton() {
 					multiple={false}
 					onDrop={async (acceptedFile) => {
 						const file = acceptedFile[0];
-						const fileName = file.name;
-						const fileType = file.type;
-						const fileSize = file.size;
-						startTransition(async () => {
-							startSimulatedProgress();
-							const signedUrl = await generatePresignedUrl(
-								fileName,
-								fileType
-							);
-							if (signedUrl.error) {
-								console.log(signedUrl.error);
-								return;
-							}
-							if (!signedUrl.url) {
-								console.log('signedUrl.url is undefined');
-								return;
-							}
-							await fetch(signedUrl.url, {
-								body: file,
-								method: 'PUT',
-								headers: {
-									'Content-Type': fileType,
-									'Content-Disposition': `inline; filename="${file.name}"`,
-								},
-							});
-							const { hostname, pathname } = new URL(
-								signedUrl.url
-							);
-							const splitPath = pathname
-								.split('/')
-								.filter(Boolean);
-							const key = splitPath[splitPath.length - 1];
-							await saveFileToDb({
-								name: fileName,
-								format: fileType,
-								size: fileSize,
-								key,
-							});
 
+						startTransition(() => {
+							startSimulatedProgress();
+							handleUpload(file);
 							setUploadProgress(100);
 						});
 					}}
@@ -126,7 +121,7 @@ function UploadButton() {
 								<Label className="mt-2 cursor-pointer bg-gray-200 px-4 py-2 rounded-md text-sm text-gray-700 dark:bg-gray-800 dark:text-gray-300">
 									Pesquise em seus arquivos
 								</Label>
-								<Input
+								<input
 									{...getInputProps()}
 									className="hidden"
 									id="file-upload"
