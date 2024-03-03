@@ -47,20 +47,22 @@ export default async function RootLayout({
 					</div>
 				</div>
 			</div>
-			<ResizablePanelGroup
-				direction="horizontal"
-				className="h-full items-stretch !hidden md:!flex"
-			>
-				<LayoutContextProvider>
+			<LayoutContextProvider>
+				<ResizablePanelGroup
+					direction="horizontal"
+					className="h-full items-stretch max-sm:!hidden"
+				>
 					<ResizableMenu>
 						<Sidebar user={user} libraries={libraries} />
 					</ResizableMenu>
-				</LayoutContextProvider>
-				<ResizableHandle withHandle />
-				<ResizablePanel defaultSize={87}>
-					<ScrollArea className="h-full px-1">{children}</ScrollArea>
-				</ResizablePanel>
-			</ResizablePanelGroup>
+					<ResizableHandle withHandle />
+					<ResizablePanel defaultSize={87}>
+						<ScrollArea className="h-full px-1">
+							{children}
+						</ScrollArea>
+					</ResizablePanel>
+				</ResizablePanelGroup>
+			</LayoutContextProvider>
 			<div className="md:hidden">{children}</div>
 		</div>
 	);
